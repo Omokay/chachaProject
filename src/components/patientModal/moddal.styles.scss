@@ -1,0 +1,30 @@
+.content-wrapper {
+
+
+  .card-title {
+    //color: #212529;
+    //font-size: 24px;
+    //font-weight: 600;
+    //padding-bottom: 5px;
+    margin: 0;
+    padding-top: 100px;
+  }
+  p {
+    color: #9EA0A5;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .card-body {
+    width: auto;
+    margin: auto auto;
+    font-family: 'Open Sans', sans-serif;
+    color: #A7B0C1;
+
+    .modaltext {
+      color: #A7B0C1;
+      font-size: 15px;
+      line-height: 1.5em;
+    }
+  }
+}
