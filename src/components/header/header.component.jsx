@@ -15,15 +15,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Collapse from '@material-ui/core/Collapse';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
 import PeopleIcon from '@material-ui/icons/People';
-import PhonelinkSetupIcon from '@material-ui/icons/PhonelinkSetup';
-import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import PaymentIcon from '@material-ui/icons/Payment';
 
 const drawerWidth = 250;
 
@@ -80,16 +74,12 @@ const  DashHeader = (props, children) => {
     const classes = useStyles();
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    const [open, setOpen] = React.useState(false);
 
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
 
-    const handleClick = () => {
-        setOpen(!open);
-    };
 
     const drawer = (
         <div>
@@ -105,10 +95,12 @@ const  DashHeader = (props, children) => {
             <Divider />
             <List component="nav"
                   aria-labelledby="nested-list-subheader">
-                <ListItem button>
-                    <ListItemIcon><DashboardIcon style={{color: 'white'}} /></ListItemIcon>
-                    <ListItemText primary='Dashboard' style={{fontSize: 16}} />
-                </ListItem>
+                <NavLink className={classes.navLink} to='/homepage'>
+                    <ListItem button>
+                        <ListItemIcon><DashboardIcon style={{color: 'white'}} /></ListItemIcon>
+                        <ListItemText primary='Dashboard' style={{fontSize: 16}} />
+                    </ListItem>
+                </NavLink>
 
                 <NavLink className={classes.navLink} to='/patients'>
                     <ListItem button>
@@ -117,52 +109,14 @@ const  DashHeader = (props, children) => {
                     </ListItem>
                 </NavLink>
                 <NavLink className={classes.navLink} to='/vaccines'>
-                    <ListItem button>
+                    <ListItem button >
                         <ListItemIcon><GroupAddIcon style={{color: 'white'}} /></ListItemIcon>
                         <ListItemText primary='Vaccines' style={{fontSize: 16}} />
                     </ListItem>
                 </NavLink>
 
-                <ListItem button onClick={handleClick}>
-                    <ListItemIcon>
-                        <PaymentIcon style={{color: 'white'}} />
-                    </ListItemIcon>
-                    <ListItemText primary="Patient Data" />
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-
-                        <NavLink className={classes.navLink} to='/recurring/process'>
-                            <ListItem button className={classes.nested}>
-                                <ListItemIcon>
-                                    <CreateNewFolderIcon style={{color: 'white'}} />
-                                </ListItemIcon>
-                                <ListItemText primary="Unvaccinated Patients" />
-                            </ListItem>
-                        </NavLink>
-
-                        <NavLink className={classes.navLink} to='/recurring/schedule'>
-                            <ListItem button className={classes.nested}>
-                                <ListItemIcon>
-                                    <PhonelinkSetupIcon style={{color: 'white'}} />
-                                </ListItemIcon>
-                                <ListItemText primary="Vaccinated Patients" />
-                            </ListItem>
-                        </NavLink>
-                        <NavLink className={classes.navLink} to='/recurring/authorization'>
-                            <ListItem button className={classes.nested}>
-                                <ListItemIcon>
-                                    <BuildIcon style={{color: 'white'}} />
-                                </ListItemIcon>
-                                <ListItemText primary="Upcoming Vaccination dates" />
-                            </ListItem>
-                        </NavLink>
-                    </List>
-                </Collapse>
-
-                <NavLink className={classes.navLink} to='/recurring/authorization'>
-                    <ListItem button className={classes.nested}>
+                <NavLink className={classes.navLink} to='/login'>
+                    <ListItem button>
                         <ListItemIcon>
                             <BuildIcon style={{color: 'white'}} />
                         </ListItemIcon>

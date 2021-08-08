@@ -8,7 +8,7 @@ import CustomButton from '../CustomButton/customButton.component';
 import './moddal.styles.scss';
 import CustomInput from "../InputComp/inputComp.component";
 import MultiSelect from "../MultipleSelect/multipleSelect.component";
-import SimpleSelect from "../SimpleSelect/simpleSelect.component";
+import SimpleSelect from "../GenderSelect/simpleSelect.component";
 import {baseUrl} from "../../httpRequest/axios";
 import {showLoader, hideLoader} from "../Loader/loader.component";
 import axios from 'axios';
@@ -82,7 +82,7 @@ const PatientModal = ({closeModal}) => {
                 setNextOfKeenContact('');
                 setNextOfKeen('');
                 setSelectedImmunization([]);
-                setInterval(() => setMod('fales'), 4000)
+                setInterval(() => setMod(false), 4000)
             } else {
                 hideLoader();
                 setError('Error encountered while attempting to create new patient')

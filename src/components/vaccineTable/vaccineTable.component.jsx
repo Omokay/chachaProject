@@ -1,9 +1,9 @@
 import React, {useContext} from 'react';
 import {StrapiContext} from "../../context/processContext";
+import axios from 'axios';
 
 
 import {
-    Avatar,
     Grid,
     Paper,
     Table,
@@ -16,6 +16,9 @@ import {
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Alerts from "../Alerts/alerts.component";
+import Button from "@material-ui/core/Button";
+import {baseUrl} from "../../httpRequest/axios";
+import jwt from "js-cookie";
 // import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
@@ -56,11 +59,18 @@ const useStyles = makeStyles((theme) => ({
     margin: {
         margin: theme.spacing(1),
     },
+    marrgin: {
+        margin: '8px auto',
+        width: '115px',
+    },
 }));
 
 const VaccineTable = () => {
 
-    const {immunization, setImmunization, info, error, setInfo, setError, mod, setMod} = useContext(StrapiContext);
+    const {immunization, setImmunization,
+        info, error, setInfo,
+        setError, setMod,
+        setIsEditVaccine} = useContext(StrapiContext);
 
 
     const classes = useStyles();
@@ -78,32 +88,47 @@ const VaccineTable = () => {
 
 
     // THIS IS AN OPTIMISTIC UPDATE FIRE.....AFFECTING THE STATE BEFORE THE RESPONSE FROM THE SERVER
-    // const handleDelete = (procId) => {
-    //
-    //     if (!procId) {
-    //         return;
-    //     }
-    //     let currentProcessState = processes;
-    //     setProcesses(processes.filter(proc => proc.Id !== process));
-    //     console.log(process);
-    //
-    //     httpDelete(`${baseUrl}${delete_process}/${procId}`).then(res => {
-    //         if (!res.success) {
-    //             // console.log(currentProcessState);
-    //             setProcess(currentProcessState);
-    //             setError(res.status);
-    //         } else {
-    //             setInfo(res.status);
-    //         }
-    //     });
-    // }
-    const handleAlert = async (event, reason) => {
-        if (reason === 'clickaway') {
-            await setError(null);
-            await setInfo(null);
+    const deleteVaccine = (vaccineId) => {
+
+        if (!vaccineId) {
+            return;
         }
-        await setError(null);
-        await setInfo(null);
+        let currentVaccineState = immunization;
+        setImmunization(immunization.filter(vaccine => vaccine['id'] !== vaccineId));
+
+        axios.delete(`${baseUrl}immunization-types/${vaccineId}`, {
+            headers: {
+                Authorization: `Bearer ${jwt.get('authCookie')}`,
+            }
+        }).then(res => {
+            if (res.status === 200) {
+                setInfo('Vaccine has been successfully deleted');
+            } else {
+                setImmunization(currentVaccineState);
+                setError('An error occured while attempting to delete vaccine');
+            }
+        });
+    }
+
+    const editVaccine = (vaccineId) => {
+        if (!vaccineId) {
+            return;
+        }
+        setIsEditVaccine(vaccineId);
+        setMod(true);
+
+    };
+
+    const handleAlert = (event, reason) => {
+        if (reason === 'clickaway') {
+             setError(null);
+             setInfo(null);
+             setIsEditVaccine('');
+
+        }
+         setError(null);
+         setInfo(null);
+         setIsEditVaccine('');
     };
 
 
@@ -114,20 +139,16 @@ const VaccineTable = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell className={classes.tableHeaderCell}>Immunization Type</TableCell>
-                            <TableCell className={classes.tableHeaderCell}>Immunization Code</TableCell>
                             <TableCell className={classes.tableHeaderCell}>Duration</TableCell>
                             <TableCell className={classes.tableHeaderCell}>Description</TableCell>
+                            <TableCell className={classes.tableHeaderCell}>Action</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {immunization.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                             <TableRow key={row['id']}>
                                 <TableCell>
-                                    <Typography color="textSecondary" variant="body2">{row['immunization_type']}</Typography>
-                                </TableCell>
-
-                                <TableCell>
-                                    <Typography color="textSecondary" variant="body2">{row['immunization_code']}</Typography>
+                                    <Typography color="textSecondary" variant="body2">{row['immunization_type'] + '  -  ' +row['immunization_code']}</Typography>
                                 </TableCell>
 
                                 <TableCell>
@@ -137,39 +158,39 @@ const VaccineTable = () => {
                                 <TableCell>
                                     <Typography color="textSecondary" variant="body2">{row['description']}</Typography>
                                 </TableCell>
-                                {/*<TableCell>*/}
-                                {/*    <Grid container style={{*/}
-                                {/*        width: '300px',*/}
-                                {/*    }}>*/}
-                                {/*        <Grid item lg={6}>*/}
-                                {/*            <Button*/}
-                                {/*                onClick={() => gotoSchedules(row.Id)}*/}
-                                {/*                style={{*/}
-                                {/*                    width: 'auto',*/}
-                                {/*                }}*/}
-                                {/*                variant="outlined"*/}
-                                {/*                size="small"*/}
-                                {/*                color="primary"*/}
-                                {/*                className={classes.margin}>*/}
-                                {/*                View Schedules*/}
-                                {/*            </Button>*/}
-                                {/*        </Grid>*/}
-                                {/*        <Grid item lg={6}>*/}
-                                {/*            <Button*/}
-                                {/*                onClick={() => handleDelete(row.Id)}*/}
-                                {/*                style={{*/}
-                                {/*                    width: '114px',*/}
-                                {/*                }}*/}
-                                {/*                variant="outlined"*/}
-                                {/*                size="small"*/}
-                                {/*                color="primary"*/}
-                                {/*                className={classes.margin}>*/}
-                                {/*                Remove*/}
-                                {/*            </Button>*/}
+                                <TableCell>
+                                    <Grid container style={{
+                                        width: '300px',
+                                    }}>
+                                        <Grid items lg={12} sm={12}>
+                                            <Button
+                                                onClick={() => editVaccine(row.id)}
+                                                style={{
+                                                    width: '114px',
+                                                }}
+                                                variant="outlined"
+                                                size="small"
+                                                color="default"
+                                                className={classes.marrgin}>
+                                                Edit
+                                            </Button>
+                                        </Grid>
+                                        <Grid items lg={12} sm={12}>
+                                            <Button
+                                                onClick={() => deleteVaccine(row.id)}
+                                                style={{
+                                                    width: '114px',
+                                                }}
+                                                variant="outlined"
+                                                size="small"
+                                                color="default"
+                                                className={classes.marrgin}>
+                                                Delete
+                                            </Button>
 
-                                {/*        </Grid>*/}
-                                {/*    </Grid>*/}
-                                {/*</TableCell>*/}
+                                        </Grid>
+                                    </Grid>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

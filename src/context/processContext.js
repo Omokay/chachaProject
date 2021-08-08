@@ -21,6 +21,19 @@ const StrapiContextProvider = ({ children }) => {
     const [nextOfKeenContact, setNextOfKeenContact] = useState('');
 
 
+    const [vaccineName, setVaccineName] = useState('');
+    const [vaccineCode, setVaccineCode] = useState('');
+    const [vaccineDesc, setVaccineDesc] = useState('');
+    const [duration, setDuration] = useState('');
+    const [isEditVaccine, setIsEditVaccine] = useState('');
+    const  [vaccineToEdit, setVaccineToEdit] = useState([]);
+
+
+
+
+
+
+
 
     return (
         <StrapiContext.Provider
@@ -40,6 +53,13 @@ const StrapiContextProvider = ({ children }) => {
                 nextOfKeen, setNextOfKeen,
                 nextOfKeenContact, setNextOfKeenContact,
                 cardno,  setCardno,
+
+                vaccineName, setVaccineName,
+                vaccineCode, setVaccineCode,
+                vaccineDesc, setVaccineDesc,
+                duration, setDuration,
+                isEditVaccine, setIsEditVaccine,
+                vaccineToEdit, setVaccineToEdit
             }}
         >
             {children}

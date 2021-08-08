@@ -27,8 +27,8 @@ const Vaccines = () =>  {
     }, []);
 
 
-    const handleModal = async () => {
-        await setMod(true);
+    const handleModal = () => {
+         setMod(true);
     };
 
     // Handle Error Messages

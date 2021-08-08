@@ -3,7 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 
 
-const CustomInput = ({ width, key, label, name, type, placeholder, defaultValue, handleChange, value}) => {
+const CustomInput = ({ width, key, label, name, type, placeholder, handleChange, value}) => {
 
 
     const useStyles = makeStyles((theme ) => ({
@@ -29,7 +29,6 @@ const CustomInput = ({ width, key, label, name, type, placeholder, defaultValue,
                     label={label}
                     type={type}
                     placeholder={placeholder}
-                    defaultValue={defaultValue}
                     name={name}
                     onKeyPress={(e)=>{e.key === 'Enter' && e.preventDefault();}}
                     variant="outlined"
