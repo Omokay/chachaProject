@@ -15,6 +15,11 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import {StrapiContext} from "../../context/processContext";
 import {formatDate} from "../../utils/helper.utlils";
+import {Grid} from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import axios from "axios";
+import {baseUrl} from "../../httpRequest/axios";
+import jwt from "js-cookie";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -39,6 +44,44 @@ function Row(props) {
     const { requests } = props;
     const [open, setOpen] = React.useState(false);
     const classes = useStyles();
+
+    const {patients, setPatients, setInfo, setError, setMod, setIsEditPatient} = useContext(StrapiContext);
+
+    const editPatient = (patientId) => {
+        if (!patientId) {
+            return;
+        }
+        setIsEditPatient(patientId);
+        setMod(true);
+    }
+
+    const deletePatient = (patientId) => {
+        if (!patientId) {
+            return;
+        }
+        let currentPatientState = patients;
+        setPatients(patients.filter(patient => patient['id'] !== patientId));
+
+        try {
+            axios.delete(`${baseUrl}patients/${patientId}`, {
+                headers: {
+                    Authorization: `Bearer ${jwt.get('authCookie')}`,
+                }
+            }).then(res => {
+                if (res.status === 200) {
+                    setInfo('Patients record has been successfully deleted');
+                } else {
+                    setPatients(currentPatientState);
+                    setError('An error occured while attempting to delete a patient record');
+                }
+            });
+        } catch(err) {
+            if (err) {
+                setError('Something went wrong, please try again');
+            }
+        }
+    }
+
     return (
            <React.Fragment>
 
@@ -65,11 +108,12 @@ function Row(props) {
                                    <TableHead>
                                        <TableRow>
                                            <TableCell>Immunization Type</TableCell>
-                                           <TableCell align="right">Immunization Code</TableCell>
-                                           <TableCell align="right">Duration</TableCell>
-                                           <TableCell align="right">Date</TableCell>
+                                           <TableCell>Immunization Code</TableCell>
+                                           <TableCell>Duration</TableCell>
+                                           <TableCell>Date</TableCell>
                                        </TableRow>
                                    </TableHead>
+
 
                                    <TableBody>
                                        {
@@ -78,18 +122,60 @@ function Row(props) {
                                                    <TableCell component="th" scope="row">
                                                        {data['immunization_type']}
                                                    </TableCell>
-                                                   <TableCell align="right">
+                                                   <TableCell>
                                                        {data['immunization_code']}
                                                    </TableCell>
-                                                   <TableCell align="right">
+                                                   <TableCell>
                                                        {data['duration']}
                                                    </TableCell>
-                                                   <TableCell align="right">
+                                                   <TableCell>
                                                        {formatDate(data['created_at'])}
                                                    </TableCell>
+
                                                </TableRow>
+
                                            )))
                                        }
+                                       <TableRow>
+
+                                           <TableCell>
+                                               <Typography variant="h6" gutterBottom component="div">
+                                                   Patient Data Actions
+                                               </Typography>
+                                               <Grid container style={{
+                                                   width: '300px',
+                                               }}>
+
+                                                   <Grid items lg={6} sm={6}>
+                                                       <Button
+                                                           onClick={() => editPatient(requests.id)}
+                                                           style={{
+                                                               width: '114px',
+                                                           }}
+                                                           variant="outlined"
+                                                           size="small"
+                                                           color="default"
+                                                           className={classes.marrgin}>
+                                                           Edit
+                                                       </Button>
+                                                   </Grid>
+                                                   <Grid items lg={6} sm={6}>
+                                                       <Button
+                                                           onClick={() => deletePatient(requests.id)}
+                                                           style={{
+                                                               width: '114px',
+                                                           }}
+                                                           variant="outlined"
+                                                           size="small"
+                                                           color="default"
+                                                           className={classes.marrgin}>
+                                                           Delete
+                                                       </Button>
+
+                                                   </Grid>
+                                               </Grid>
+                                           </TableCell>
+                                       </TableRow>
                                    </TableBody>
                                </Table>
                            </Box>
@@ -117,6 +203,7 @@ export default function CollapsibleTable() {
                         <TableCell align="right" className={classes.tableHeader}>Firstname</TableCell>
                         <TableCell align="right" className={classes.tableHeader}>Age</TableCell>
                         <TableCell align="right" className={classes.tableHeader}>Phone</TableCell>
+
                     </TableRow>
                 </TableHead>
                 <TableBody>

@@ -96,18 +96,25 @@ const VaccineTable = () => {
         let currentVaccineState = immunization;
         setImmunization(immunization.filter(vaccine => vaccine['id'] !== vaccineId));
 
-        axios.delete(`${baseUrl}immunization-types/${vaccineId}`, {
-            headers: {
-                Authorization: `Bearer ${jwt.get('authCookie')}`,
+        try {
+
+            axios.delete(`${baseUrl}immunization-types/${vaccineId}`, {
+                headers: {
+                    Authorization: `Bearer ${jwt.get('authCookie')}`,
+                }
+            }).then(res => {
+                if (res.status === 200) {
+                    setInfo('Vaccine has been successfully deleted');
+                } else {
+                    setImmunization(currentVaccineState);
+                    setError('An error occured while attempting to delete vaccine');
+                }
+            });
+        } catch(err) {
+            if (err) {
+                setError('Something went wrong, please try again');
             }
-        }).then(res => {
-            if (res.status === 200) {
-                setInfo('Vaccine has been successfully deleted');
-            } else {
-                setImmunization(currentVaccineState);
-                setError('An error occured while attempting to delete vaccine');
-            }
-        });
+        }
     }
 
     const editVaccine = (vaccineId) => {

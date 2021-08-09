@@ -11,7 +11,7 @@ import Alerts from "../Alerts/alerts.component";
 
 const Patients = () => {
 
-    const {patients, setPatients, setImmunization, mod, setMod, setInfo, setError, info, error} = useContext(StrapiContext);
+    const {patients, setPatients, setImmunization, mod, setMod, setInfo, setError, info, error, setIsEditPatient} = useContext(StrapiContext);
     const jwt = jwtCookie.get('authCookie');
 
     useEffect(() => {
@@ -50,9 +50,11 @@ const Patients = () => {
             setError(null);
             setMod(false);
             setInfo(null);
+            setIsEditPatient('');
         }
         setError(null);
         setInfo(null);
+        setIsEditPatient('');
     };
 
 

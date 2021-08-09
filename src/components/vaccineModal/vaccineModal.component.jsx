@@ -35,25 +35,31 @@ const VaccineModal = () => {
 
     const  {mod, setMod, setError, setInfo, duration, setDuration,
         vaccineName, setVaccineName, vaccineCode, setVaccineCode, vaccineDesc,
-        setVaccineDesc, vaccineToEdit, setVaccineToEdit,
+        setVaccineDesc, setVaccineToEdit,
         isEditVaccine, setIsEditVaccine} = useContext(StrapiContext);
 
     // Check modal is for new addition or modification of existing  data
     useEffect(() => {
          if (isEditVaccine) {
-             axios.get(`${baseUrl}immunization-types/${isEditVaccine}`, {
-                 headers: {
-                     'Authorization': `Bearer ${jwt}`,
+             try {
+                 axios.get(`${baseUrl}immunization-types/${isEditVaccine}`, {
+                     headers: {
+                         'Authorization': `Bearer ${jwt}`,
+                     }
+                 }).then((res) => {
+                     const {data} = res;
+
+                     setVaccineToEdit(data);
+                     setVaccineName(data['immunization_type']);
+                     setVaccineCode(data['immunization_code']);
+                     setVaccineDesc(data['description']);
+                     setDuration(data['duration']);
+                 });
+             } catch(err) {
+                 if (err) {
+                     setError('Something went wrong, please try again');
                  }
-             }).then((res) => {
-                 const {data} = res;
-                 console.log(data);
-                 setVaccineToEdit(data);
-                 setVaccineName(data['immunization_type']);
-                 setVaccineCode(data['immunization_code']);
-                 setVaccineDesc(data['description']);
-                 setDuration(data['duration']);
-             });
+             }
          } else {
              return;
          }
@@ -76,60 +82,72 @@ const VaccineModal = () => {
 
     const createVaccine = async () => {
         showLoader();
-        await axios.post(`${baseUrl}immunization-types`, {
-            'immunization_type': vaccineName,
-            'description': vaccineDesc,
-            'immunization_code': vaccineCode,
-            'duration': duration,
-        }, {
-            headers: {
-                'Authorization': `Bearer ${jwt}`,
-            }
-        }).then((res) => {
-            if(res.status === 200) {
-                hideLoader();
-                setInfo('Vaccine has been added')
+        try {
+            await axios.post(`${baseUrl}immunization-types`, {
+                'immunization_type': vaccineName,
+                'description': vaccineDesc,
+                'immunization_code': vaccineCode,
+                'duration': duration,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${jwt}`,
+                }
+            }).then((res) => {
+                if(res.status === 200) {
+                    hideLoader();
+                    setInfo('Vaccine has been added')
 
-            } else {
-               hideLoader();
-               setVaccineName('');
-               setVaccineCode('');
-               setVaccineDesc('');
-               setDuration('');
-               setInterval(() => setMod(false), 4000)
-            }
+                } else {
+                    hideLoader();
+                    setVaccineName('');
+                    setVaccineCode('');
+                    setVaccineDesc('');
+                    setDuration('');
+                    setInterval(() => setMod(false), 4000)
+                }
 
-        });
+            });
+        } catch(err) {
+            if (err) {
+                setError('Something went wrong, please try again');
+            }
+        }
     }
 
     const updateVaccine = async () => {
         showLoader();
-        await axios.put(`${baseUrl}immunization-types/${isEditVaccine}`, {
-            'immunization_type': vaccineName,
-            'description': vaccineDesc,
-            'immunization_code': vaccineCode,
-            'duration': duration,
-        }, {
-            headers: {
-                'Authorization': `Bearer ${jwt}`,
-            }
-        }).then((res) => {
-            if(res.status === 200) {
-                hideLoader();
-                setInfo('Vaccine has been update')
+        try {
+            await axios.put(`${baseUrl}immunization-types/${isEditVaccine}`, {
+                'immunization_type': vaccineName,
+                'description': vaccineDesc,
+                'immunization_code': vaccineCode,
+                'duration': duration,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${jwt}`,
+                }
+            }).then((res) => {
+                if(res.status === 200) {
+                    hideLoader();
+                    setInfo('Vaccine has been update')
 
-            } else {
-                hideLoader();
-                setVaccineName('');
-                setVaccineCode('');
-                setVaccineDesc('');
-                setDuration('');
-                setIsEditVaccine('');
-                setVaccineToEdit([]);
-                setInterval(() => setMod(false), 4000)
-            }
+                } else {
+                    hideLoader();
+                    setVaccineName('');
+                    setVaccineCode('');
+                    setVaccineDesc('');
+                    setDuration('');
+                    setIsEditVaccine('');
+                    setVaccineToEdit([]);
+                    setInterval(() => setMod(false), 4000)
+                }
 
-        });
+            });
+        } catch (err) {
+            if (err) {
+                setError('Something went wrong, please try again');
+            }
+        }
     }
 
     const validate = async () => {

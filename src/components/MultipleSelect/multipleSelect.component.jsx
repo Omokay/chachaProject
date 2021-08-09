@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MultiSelect() {
     const classes = useStyles();
-    const {immunization, setSelectedImmunization} = useContext(StrapiContext);
+    const {immunization, selectedImmunization, setSelectedImmunization} = useContext(StrapiContext);
 
     return (
         <div className={classes.root}>
@@ -31,7 +31,7 @@ export default function MultiSelect() {
                 }}
                 options={immunization}
                 getOptionLabel={(option) => option['immunization_type'] + ' ' + option['immunization_code']}
-                // defaultValue={[agentCodes[6]]}
+                defaultValue={selectedImmunization}
                 renderInput={(params) => (
 
                     <TextField

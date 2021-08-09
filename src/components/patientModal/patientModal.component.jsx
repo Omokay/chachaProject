@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {StrapiContext} from '../../context/processContext';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -12,7 +12,8 @@ import SimpleSelect from "../GenderSelect/simpleSelect.component";
 import {baseUrl} from "../../httpRequest/axios";
 import {showLoader, hideLoader} from "../Loader/loader.component";
 import axios from 'axios';
-import jwt from 'js-cookie';
+import jwtCookie from 'js-cookie';
+
 
 
 
@@ -21,11 +22,42 @@ const PatientModal = ({closeModal}) => {
     const {setError, mod, setMod,
             setSurname, setFirstname, setAge,
             setPhone, setAddress, setNextOfKeen,
-        setNextOfKeenContact, setCardno, surname,
-        selectedImmunization,
+        setNextOfKeenContact, setCardno, surname, setGender,
+        selectedImmunization, isEditPatient, setPatientToEdit,
             firstname, age, phone, address, gender, cardno,  nextOfKeen, nextOfKeenContact, setSelectedImmunization, setInfo} = useContext(StrapiContext);
 
+    const jwt = jwtCookie.get('authCookie');
 
+
+    useEffect(() => {
+        if (isEditPatient) {
+            axios.get(`${baseUrl}patients/${isEditPatient}`, {
+                headers: {
+                    'Authorization': `Bearer ${jwt}`,
+                }
+            }).then((res) => {
+                const {data} = res;
+
+
+                console.log(data);
+
+                setPatientToEdit(data);
+                setSurname(data['surname']);
+                setFirstname(data['firstname']);
+                setAge(data['age']);
+                setAddress(data['address']);
+                setCardno(data['card_no']);
+                setNextOfKeen(data['next_of_keen']);
+                setNextOfKeenContact(data['next_of_keen_contact']);
+                setPhone(data['phone']);
+                setGender(data['gender']);
+                setSelectedImmunization(data['immunization_schedules']);
+            });
+        } else {
+            return;
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const handleSurname = (e) => {
         setSurname(e.target.value);
@@ -54,43 +86,93 @@ const PatientModal = ({closeModal}) => {
 
     const handleSubmit = async () => {
        showLoader();
-       await axios.post(`${baseUrl}patients`, {
-            'card_no': cardno,
-            'surname': surname,
-            'firstname':  firstname,
-            'age': age,
-            'gender': gender,
-            'phone': phone,
-            'address': address,
-            'next_of_keen': nextOfKeen,
-            'next_of_keen_contact': nextOfKeenContact,
-            'immunization_schedules':  selectedImmunization,
-        }, {
-            headers: {
-                Authorization: `Bearer ${jwt.get('authCookie')}`,
-            }
-        }).then((res)  => {
-            if(res.status === 200) {
-                hideLoader()
-                setInfo('Patient has been created');
-                setCardno('');
-                setSurname('');
-                setFirstname('');
-                setAge('');
-                setAddress('');
-                setPhone('');
-                setNextOfKeenContact('');
-                setNextOfKeen('');
-                setSelectedImmunization([]);
-                setInterval(() => setMod(false), 4000)
-            } else {
-                hideLoader();
-                setError('Error encountered while attempting to create new patient')
-            }
-        })
+       try  {
+           await axios.post(`${baseUrl}patients`, {
+               'card_no': cardno,
+               'surname': surname,
+               'firstname':  firstname,
+               'age': age,
+               'gender': gender,
+               'phone': phone,
+               'address': address,
+               'next_of_keen': nextOfKeen,
+               'next_of_keen_contact': nextOfKeenContact,
+               'immunization_schedules':  selectedImmunization,
+           }, {
+               headers: {
+                   Authorization: `Bearer ${jwt.get('authCookie')}`,
+               }
+           }).then((res)  => {
+               if(res.status === 200) {
+                   hideLoader()
+                   setInfo('Patient has been created');
+                   setCardno('');
+                   setSurname('');
+                   setFirstname('');
+                   setAge('');
+                   setAddress('');
+                   setPhone('');
+                   setNextOfKeenContact('');
+                   setNextOfKeen('');
+                   setSelectedImmunization([]);
+                   setInterval(() => setMod(false), 4000)
+               } else {
+                   hideLoader();
+                   setError('Error encountered while attempting to create new patient')
+               }
+           })
+       } catch(err) {
+           if (err) {
+               setError('Something went wrong, please try again');
+           }
+       }
+    }
+
+    const updatePatientData = async () => {
+        showLoader();
+        try {
+            await axios.put(`${baseUrl}patients/${isEditPatient}`, {
+                'card_no': cardno,
+                'surname': surname,
+                'firstname':  firstname,
+                'age': age,
+                'gender': gender,
+                'phone': phone,
+                'address': address,
+                'next_of_keen': nextOfKeen,
+                'next_of_keen_contact': nextOfKeenContact,
+                'immunization_schedules':  selectedImmunization,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`,
+                }
+            }).then((res)  => {
+                if(res.status === 200) {
+                    hideLoader()
+                    setInfo('Patient has been updated successfully');
+                    setCardno('');
+                    setSurname('');
+                    setFirstname('');
+                    setAge('');
+                    setAddress('');
+                    setPhone('');
+                    setNextOfKeenContact('');
+                    setNextOfKeen('');
+                    setSelectedImmunization([]);
+                    setInterval(() => setMod(false), 4000)
+                } else {
+                    hideLoader();
+                    setError('Error encountered while attempting to update patient record')
+                }
+            })
+        } catch (err) {
+           if (err) {
+               setError('Something went wrong');
+           }
+        }
     }
     // Run input validation for patient creation
-    const checkValidation = () => {
+    const checkValidation = async () => {
         if (surname.length < 1 ||
             firstname.length < 1 ||
             age === 0 || cardno.length < 1 ||
@@ -116,8 +198,10 @@ const PatientModal = ({closeModal}) => {
             setError('Card number is not valid');
         } else if (typeof address !== 'string' || address.length < 1) {
             setError('Invalid address was entered');
-        }  else {
-            handleSubmit();
+        } else if (isEditPatient) {
+            await updatePatientData();
+        }  else  {
+            await handleSubmit();
         }
     }
 
