@@ -28,7 +28,7 @@ const Patients = () => {
             }
         }).then((res) => {
             const {data} = res;
-            console.log(data);
+            // console.log(data);
             setPatients(data);
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -41,7 +41,7 @@ const Patients = () => {
             }
         }).then((res) => {
             const {data} = res;
-            console.log(data);
+            // console.log(data);
             setImmunization(data);
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
