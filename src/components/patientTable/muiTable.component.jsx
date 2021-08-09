@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
@@ -45,7 +45,25 @@ function Row(props) {
     const [open, setOpen] = React.useState(false);
     const classes = useStyles();
 
-    const {patients, setPatients, setInfo, setError, setMod, setIsEditPatient} = useContext(StrapiContext);
+    const {patients, setPatients, setInfo, searchInput, setError, setMod, setIsEditPatient} = useContext(StrapiContext);
+    // const  [filteredList, setFilteredList] = useState([]);
+
+    // Handle Search based rendering
+    // const searchPatients = () => {
+    //     let currentPatients = patients;
+    //     if (searchInput.length > 0 && patients) {
+    //         let searchResult  = patients.filter((patient) => {
+    //             patient.card_no.toLowerCase().includes(searchInput.toLowerCase())  ||
+    //             patient.surname.toLowerCase().includes(searchInput.toLowerCase())  ||
+    //             patient.firstname.toLowerCase().includes(searchInput.toLowerCase()) ||
+    //             patient.phone.includes(searchInput) ||  patient.next_of_keen.toLowerCase().includes(searchInput.toLowerCase());
+    //         });
+    //         if (searchResult)  {
+    //             setPatients(searchResult);
+    //         }
+    //     }
+    //
+    // }
 
     const editPatient = (patientId) => {
         if (!patientId) {

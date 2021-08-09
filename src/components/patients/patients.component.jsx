@@ -8,11 +8,18 @@ import jwtCookie from 'js-cookie';
 import CustomButton from "../CustomButton/customButton.component";
 import PatientModal from "../patientModal/patientModal.component";
 import Alerts from "../Alerts/alerts.component";
+import CustomInput from "../InputComp/inputComp.component";
 
 const Patients = () => {
 
-    const {patients, setPatients, setImmunization, mod, setMod, setInfo, setError, info, error, setIsEditPatient} = useContext(StrapiContext);
+    const {patients, setPatients, setImmunization,
+        mod, setMod, setInfo, setError, info, error, searchInput,
+        setIsEditPatient,
+        setFirstname,  setPhone, setAge, setAddress, setCardno, setNextOfKeen,
+        setNextOfKeenContact, setGender, setSelectedImmunization, setSurname} = useContext(StrapiContext);
+
     const jwt = jwtCookie.get('authCookie');
+
 
     useEffect(() => {
         axios.get(`${baseUrl}patients`, {
@@ -40,8 +47,9 @@ const Patients = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleModal = async () => {
-        await setMod(true);
+    const handleModal =  () => {
+        setIsEditPatient(null);
+        setMod(true);
     };
 
     // Handle Error Messages
@@ -51,16 +59,27 @@ const Patients = () => {
             setMod(false);
             setInfo(null);
             setIsEditPatient('');
+
+            setSurname('');
+            setFirstname('');
+            setAge('');
+            setAddress('');
+            setCardno('');
+            setNextOfKeen('');
+            setNextOfKeenContact('');
+            setPhone('');
+            setGender('');
+            setSelectedImmunization([]);
         }
         setError(null);
         setInfo(null);
-        setIsEditPatient('');
     };
 
 
     return (
         <>
-            <DashHeader>
+            <DashHeader hasSearch='true'>
+
                 <div className='container-fluid'>
                     <div className='header'>
 

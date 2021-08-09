@@ -30,7 +30,7 @@ const PatientModal = ({closeModal}) => {
 
 
     useEffect(() => {
-        if (isEditPatient) {
+        if (isEditPatient !== null) {
             axios.get(`${baseUrl}patients/${isEditPatient}`, {
                 headers: {
                     'Authorization': `Bearer ${jwt}`,
@@ -54,7 +54,17 @@ const PatientModal = ({closeModal}) => {
                 setSelectedImmunization(data['immunization_schedules']);
             });
         } else {
-            return;
+
+            setSurname('');
+            setFirstname('');
+            setAge('');
+            setAddress('');
+            setCardno('');
+            setNextOfKeen('');
+            setNextOfKeenContact('');
+            setPhone('');
+            setGender('');
+            setSelectedImmunization([]);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])

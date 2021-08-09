@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {NavLink } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -18,6 +18,8 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import PeopleIcon from '@material-ui/icons/People';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import {StrapiContext} from "../../context/processContext";
+import CustomInput from "../InputComp/inputComp.component";
 
 const drawerWidth = 250;
 
@@ -74,6 +76,13 @@ const  DashHeader = (props, children) => {
     const classes = useStyles();
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
+
+    const {setSearchInput, searchInput, hasSearch} = useContext(StrapiContext);
+
+    const handleSearch = (e) => {
+        setSearchInput(e.target.value);
+        console.log(searchInput);
+    }
 
 
     const handleDrawerToggle = () => {
@@ -147,6 +156,17 @@ const  DashHeader = (props, children) => {
                     <Typography variant="h6" noWrap>
                         ChaCha Clinic
                     </Typography>
+                    {
+                        (hasSearch) ? (
+                            <CustomInput
+                                name='search'
+                                handleChange={handleSearch}
+                                width='400px'
+                                type='text'
+                                value={searchInput}
+                                label='Search for patient' />
+                        ) : ''
+                    }
                 </Toolbar>
             </AppBar>
             <nav className={classes.drawer} aria-label="mailbox folders">

@@ -40,7 +40,8 @@ const VaccineModal = () => {
 
     // Check modal is for new addition or modification of existing  data
     useEffect(() => {
-         if (isEditVaccine) {
+        console.log(isEditVaccine);
+         if (isEditVaccine !== null ) {
              try {
                  axios.get(`${baseUrl}immunization-types/${isEditVaccine}`, {
                      headers: {
@@ -61,7 +62,10 @@ const VaccineModal = () => {
                  }
              }
          } else {
-             return;
+             setVaccineName('');
+             setVaccineCode('');
+             setVaccineDesc('');
+             setDuration('');
          }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },  [])
@@ -109,6 +113,7 @@ const VaccineModal = () => {
             });
         } catch(err) {
             if (err) {
+                hideLoader();
                 setError('Something went wrong, please try again');
             }
         }
@@ -137,7 +142,7 @@ const VaccineModal = () => {
                     setVaccineCode('');
                     setVaccineDesc('');
                     setDuration('');
-                    setIsEditVaccine('');
+                    setIsEditVaccine(null);
                     setVaccineToEdit([]);
                     setInterval(() => setMod(false), 4000)
                 }
@@ -145,7 +150,9 @@ const VaccineModal = () => {
             });
         } catch (err) {
             if (err) {
+                hideLoader();
                 setError('Something went wrong, please try again');
+
             }
         }
     }
@@ -157,11 +164,10 @@ const VaccineModal = () => {
             setError('Vaccine name must be a string');
         } else if (typeof vaccineCode !== 'string') {
             setError('vaccine Code must be a string');
-        } else if (isEditVaccine) {
-            await updateVaccine();
         }
         else {
             await createVaccine();
+            console.log(isEditVaccine);
         }
 
     }

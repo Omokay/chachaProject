@@ -10,7 +10,9 @@ import Alerts from "../Alerts/alerts.component";
 import VaccineTable from "../vaccineTable/vaccineTable.component";
 
 const Vaccines = () =>  {
-    const {immunization, setImmunization, setInfo, info, mod, setError, setMod, error} = useContext(StrapiContext);
+    const {immunization, setImmunization, setIsEditVaccine, setInfo,
+        info, mod, setError, setMod, error,
+        setVaccineName, setVaccineCode, setVaccineDesc, setDuration} = useContext(StrapiContext);
     const jwt = jwtCookie.get('authCookie');
 
     useEffect(() => {
@@ -28,6 +30,7 @@ const Vaccines = () =>  {
 
 
     const handleModal = () => {
+        setIsEditVaccine(null);
          setMod(true);
     };
 
@@ -37,6 +40,13 @@ const Vaccines = () =>  {
             setError(null);
             setMod(false);
             setInfo(null);
+
+            setVaccineName('');
+            setVaccineCode('');
+            setVaccineDesc('');
+            setDuration('');
+
+
         }
         setError(null);
         setInfo(null);
@@ -84,7 +94,11 @@ const Vaccines = () =>  {
 
                             {
                                 (immunization && immunization ? <VaccineTable /> : (immunization === []) ? <h4>No available vaccines</h4> :
-                                    <h4>Loading...</h4>)
+                                    <h4 style={{
+                                        paddingLeft: '15px',
+                                        fontWeight: '500',
+                                        textAlign: 'left',
+                                    }}>Loading...</h4>)
                             }
                         </div>
                     </div>
