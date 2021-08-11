@@ -164,6 +164,8 @@ const VaccineModal = () => {
             setError('Vaccine name must be a string');
         } else if (typeof vaccineCode !== 'string') {
             setError('vaccine Code must be a string');
+        }  else if (isEditVaccine) {
+            await updateVaccine();
         }
         else {
             await createVaccine();

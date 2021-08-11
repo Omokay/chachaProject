@@ -74,7 +74,7 @@ const Vaccines = () =>  {
                             }}>
                                 <h5 style={{
                                     paddingLeft: '15px',
-                                    fontWeight: '500',
+                                    fontWeight: '600',
                                     textAlign: 'left',
                                 }}>Immunization & Vaccines</h5>
 

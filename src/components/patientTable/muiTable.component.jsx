@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
@@ -45,25 +45,7 @@ function Row(props) {
     const [open, setOpen] = React.useState(false);
     const classes = useStyles();
 
-    const {patients, setPatients, setInfo, searchInput, setError, setMod, setIsEditPatient} = useContext(StrapiContext);
-    // const  [filteredList, setFilteredList] = useState([]);
-
-    // Handle Search based rendering
-    // const searchPatients = () => {
-    //     let currentPatients = patients;
-    //     if (searchInput.length > 0 && patients) {
-    //         let searchResult  = patients.filter((patient) => {
-    //             patient.card_no.toLowerCase().includes(searchInput.toLowerCase())  ||
-    //             patient.surname.toLowerCase().includes(searchInput.toLowerCase())  ||
-    //             patient.firstname.toLowerCase().includes(searchInput.toLowerCase()) ||
-    //             patient.phone.includes(searchInput) ||  patient.next_of_keen.toLowerCase().includes(searchInput.toLowerCase());
-    //         });
-    //         if (searchResult)  {
-    //             setPatients(searchResult);
-    //         }
-    //     }
-    //
-    // }
+    const {patients, setPatients, setInfo, setError, setMod, setIsEditPatient} = useContext(StrapiContext);
 
     const editPatient = (patientId) => {
         if (!patientId) {
@@ -205,11 +187,13 @@ function Row(props) {
 }
 
 
-export default function CollapsibleTable() {
+export default function CollapsibleTable({filtered}) {
 
 
     const classes = useStyles();
-    const {patients} = useContext(StrapiContext);
+    const {patients, filteredPatients, isFiltered} = useContext(StrapiContext);
+
+
     return (
         <TableContainer component={Paper}>
             <Table aria-label="collapsible table">
@@ -225,9 +209,17 @@ export default function CollapsibleTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {patients && patients.map((requests) => (
-                        <Row key={requests.id} requests={requests} />
-                    ))}
+                    {
+                        (!filtered) ?
+                            patients.map((requests) => (
+                            <Row key={requests.id} requests={requests} />
+                        ))  : (filtered && filteredPatients.length > 0) ?
+                            filteredPatients.map((requests) => (
+                            <Row key={requests.id} requests={requests} />
+                        )) :  patients.map((requests) => (
+                                <Row key={requests.id} requests={requests} />
+                            ))
+                    }
                 </TableBody>
             </Table>
         </TableContainer>

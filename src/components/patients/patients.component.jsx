@@ -13,10 +13,50 @@ import CustomInput from "../InputComp/inputComp.component";
 const Patients = () => {
 
     const {patients, setPatients, setImmunization,
-        mod, setMod, setInfo, setError, info, error, searchInput,
+        mod, setMod, setInfo, setError, info, error,
         setIsEditPatient,
-        setFirstname,  setPhone, setAge, setAddress, setCardno, setNextOfKeen,
-        setNextOfKeenContact, setGender, setSelectedImmunization, setSurname} = useContext(StrapiContext);
+        setFirstname,  setPhone, setAge, setAddress, setCardno, setNextOfKeen, isFiltered, setIsFiltered,
+        setNextOfKeenContact, setGender, setSelectedImmunization, setSurname, setSearchInput, searchInput, filteredPatients, setFilteredPatients} = useContext(StrapiContext);
+
+    const handleSearch = (e) => {
+        setSearchInput(e.target.value);
+        console.log(e.target.value);
+        searchPatients(searchInput);
+    }
+
+    // Handle Search based rendering
+    let currentPatients = patients;
+
+    const searchPatients = (searchInput) => {
+        if (searchInput.length > 0 && patients) {
+           let pfilter =  patients.filter((patient) => {
+
+                 return (
+                     patient.card_no.toLowerCase().includes(searchInput.toLowerCase()) ||
+                     patient.surname.toLowerCase().includes(searchInput.toLowerCase()) ||
+                     patient.firstname.toLowerCase().includes(searchInput.toLowerCase()) ||
+                     patient.phone.includes(searchInput) || patient.next_of_keen.toLowerCase().includes(searchInput.toLowerCase())
+                 )
+
+             });
+
+            setFilteredPatients([...pfilter]);
+
+            if (filteredPatients.length > 0) {
+                setIsFiltered(true);
+            } else {
+                setIsFiltered(false);
+            }
+            // console.log(isFiltered);
+            // console.log(filteredPatients);
+            return setFilteredPatients;
+        }
+        setIsFiltered(false);
+        return currentPatients;
+
+
+    }
+
 
     const jwt = jwtCookie.get('authCookie');
 
@@ -78,7 +118,7 @@ const Patients = () => {
 
     return (
         <>
-            <DashHeader hasSearch='true'>
+            <DashHeader>
 
                 <div className='container-fluid'>
                     <div className='header'>
@@ -91,15 +131,24 @@ const Patients = () => {
                              padding: '20px 0',
                          }}
                     >
+                        <CustomInput
+                            name='search'
+                            handleChange={handleSearch}
+                            width='98%'
+                            type='text'
+                            value={searchInput}
+                            placeholder='Enter you card no'
+                            label='Search for patient' />
 
                         <div className="card-body">
                             <div style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
                             }}>
+
                                 <h5 style={{
                                     paddingLeft: '15px',
-                                    fontWeight: '500',
+                                    fontWeight: '600',
                                     textAlign: 'left',
                                 }}>Patient Records</h5>
 
@@ -119,7 +168,10 @@ const Patients = () => {
                             {
                                 (patients && patients === []) ?
                                     <h5>No patients records available</h5> :
-                                    (patients && patients.length > 0) ? <CollapsibleTable /> :  <h5>Loading...</h5>
+                                    (patients && patients.length > 0 && filteredPatients.length < 1) ?
+                                        <CollapsibleTable /> :
+                                        (patients && filteredPatients.length > 0) ?
+                                            <CollapsibleTable filtered = {filteredPatients}/>  : <h5>Loading...</h5>
                             }
                         </div>
                     </div>

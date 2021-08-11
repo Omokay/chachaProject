@@ -8,6 +8,8 @@ const StrapiContextProvider = ({ children }) => {
     const [patients, setPatients] = useState([]);
     const [immunization, setImmunization] = useState([]);
 
+    const [filteredPatients, setFilteredPatients] = useState([]);
+
     const [searchInput, setSearchInput] = useState('');
 
 
@@ -34,6 +36,8 @@ const StrapiContextProvider = ({ children }) => {
     const [isEditVaccine, setIsEditVaccine] = useState(null);
     const  [vaccineToEdit, setVaccineToEdit] = useState([]);
 
+    const [isFiltered, setIsFiltered] = useState(false);
+
 
 
     return (
@@ -54,6 +58,10 @@ const StrapiContextProvider = ({ children }) => {
                 nextOfKeen, setNextOfKeen,
                 nextOfKeenContact, setNextOfKeenContact,
                 cardno,  setCardno,
+                isFiltered, setIsFiltered,
+
+
+                filteredPatients, setFilteredPatients,
 
                 isEditPatient, setIsEditPatient,
                 patientToEdit, setPatientToEdit,

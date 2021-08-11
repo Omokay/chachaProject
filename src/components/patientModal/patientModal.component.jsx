@@ -22,8 +22,8 @@ const PatientModal = ({closeModal}) => {
     const {setError, mod, setMod,
             setSurname, setFirstname, setAge,
             setPhone, setAddress, setNextOfKeen,
-        setNextOfKeenContact, setCardno, surname, setGender,
-        selectedImmunization, isEditPatient, setPatientToEdit,
+            setNextOfKeenContact, setCardno, surname, setGender,
+            selectedImmunization, isEditPatient, setPatientToEdit,
             firstname, age, phone, address, gender, cardno,  nextOfKeen, nextOfKeenContact, setSelectedImmunization, setInfo} = useContext(StrapiContext);
 
     const jwt = jwtCookie.get('authCookie');
@@ -39,7 +39,7 @@ const PatientModal = ({closeModal}) => {
                 const {data} = res;
 
 
-                console.log(data);
+                // console.log(data);
 
                 setPatientToEdit(data);
                 setSurname(data['surname']);
@@ -160,6 +160,7 @@ const PatientModal = ({closeModal}) => {
                 if(res.status === 200) {
                     hideLoader()
                     setInfo('Patient has been updated successfully');
+
                     setCardno('');
                     setSurname('');
                     setFirstname('');

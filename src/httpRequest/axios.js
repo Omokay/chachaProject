@@ -2,6 +2,8 @@ import axios from 'axios';
 
 export const baseUrl = 'http://localhost:1337/';
 
+// export const baseUrl = 'https://vast-ridge-10824.herokuapp.com/';
+
 export const httpGet = async (url) => {
     try {
         const { data } = await axios.get(`${url}`);

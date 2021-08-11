@@ -15,6 +15,7 @@ import {StrapiContext} from '../../context/processContext';
 import Alerts from "../Alerts/alerts.component";
 
 import Cookies from 'js-cookie';
+import {hideLoader, showLoader} from "../Loader/loader.component";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -85,21 +86,27 @@ export default function SignIn() {
     }
 
     const handleLogin = (username, password) => {
-        httpPost(`${baseUrl}auth/local/`, {
-            'identifier': username,
-            'password': password,
-        })
-            .then((res) => {
-                if (res.jwt) {
-                    Cookies.set('authCookie', res.jwt);
-                    setAuthToken(res.jwt);
-                    console.log(authToken);
-
-                    history.push('/homepage');
-                } else {
-                    console.log(res.message);
-                }
-            });
+       if (username.length <  1 || password.length < 1) {
+           setError('Missing required fields');
+       } else {
+           showLoader();
+           httpPost(`${baseUrl}auth/local/`, {
+               'identifier': username,
+               'password': password,
+           })
+               .then((res) => {
+                   hideLoader();
+                   if (res.jwt) {
+                       Cookies.set('authCookie', res.jwt);
+                       setAuthToken(res.jwt);
+                       // console.log(authToken);
+                       history.push('/homepage');
+                   } else {
+                       hideLoader();
+                       setError('Something went wrong. please try again...');
+                   }
+               });
+       }
     }
 
     /***
@@ -133,10 +140,13 @@ export default function SignIn() {
     };
 
     const handleSignup = () => {
+        showLoader();
         if (newPass !== confirmPass) {
-            console.log('Password does not match');
+            setError('Password does not match')
+            // console.log('Password does not match');
         }  else if (!newEmail || !newPass || !confirmPass) {
-            console.log('All inputs are required');
+            setError('All inputs are required');
+            // console.log('All inputs are required');
         } else {
             httpPost(`${baseUrl}auth/local/register`, {
                 'username': newUser,
@@ -144,7 +154,12 @@ export default function SignIn() {
                 'password': newPass,
 
             }).then((res) => {
-                console.log(res);
+                hideLoader();
+                if (res.status === 200) {
+                    setInfo('You have successfully added a user');
+                } else {
+                    setError('Something went wrong. Please try again...')
+                }
             })
         }
     };

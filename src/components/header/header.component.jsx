@@ -77,13 +77,6 @@ const  DashHeader = (props, children) => {
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
-    const {setSearchInput, searchInput, hasSearch} = useContext(StrapiContext);
-
-    const handleSearch = (e) => {
-        setSearchInput(e.target.value);
-        console.log(searchInput);
-    }
-
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -156,17 +149,6 @@ const  DashHeader = (props, children) => {
                     <Typography variant="h6" noWrap>
                         ChaCha Clinic
                     </Typography>
-                    {
-                        (hasSearch) ? (
-                            <CustomInput
-                                name='search'
-                                handleChange={handleSearch}
-                                width='400px'
-                                type='text'
-                                value={searchInput}
-                                label='Search for patient' />
-                        ) : ''
-                    }
                 </Toolbar>
             </AppBar>
             <nav className={classes.drawer} aria-label="mailbox folders">
