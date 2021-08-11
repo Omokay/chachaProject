@@ -10,7 +10,7 @@ import Alerts from "../Alerts/alerts.component";
 import VaccineTable from "../vaccineTable/vaccineTable.component";
 
 const Vaccines = () =>  {
-    const {immunization, setImmunization, setIsEditVaccine, setInfo,
+    const {immunization, setImmunization, setIsEditVaccine, setInfo, setHasSearch,
         info, mod, setError, setMod, error,
         setVaccineName, setVaccineCode, setVaccineDesc, setDuration} = useContext(StrapiContext);
     const jwt = jwtCookie.get('authCookie');

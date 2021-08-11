@@ -140,7 +140,6 @@ export default function SignIn() {
     };
 
     const handleSignup = () => {
-        showLoader();
         if (newPass !== confirmPass) {
             setError('Password does not match')
             // console.log('Password does not match');
@@ -148,19 +147,26 @@ export default function SignIn() {
             setError('All inputs are required');
             // console.log('All inputs are required');
         } else {
+            showLoader();
             httpPost(`${baseUrl}auth/local/register`, {
                 'username': newUser,
                 'email': newEmail,
                 'password': newPass,
 
             }).then((res) => {
-                hideLoader();
                 if (res.status === 200) {
+                    hideLoader();
                     setInfo('You have successfully added a user');
                 } else {
-                    setError('Something went wrong. Please try again...')
+                    hideLoader();
+                    setError('Something went wrong. Make sure email is unique...');
+                    setNewEmail('');
+                    setNewUser('');
+                    setPassword('');
+                    setConfirmedPass('');
                 }
             })
+            hideLoader();
         }
     };
 
