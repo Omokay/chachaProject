@@ -110,7 +110,7 @@ const PatientModal = ({closeModal}) => {
                'immunization_schedules':  selectedImmunization,
            }, {
                headers: {
-                   Authorization: `Bearer ${jwt.get('authCookie')}`,
+                   Authorization: `Bearer ${jwt}`,
                }
            }).then((res)  => {
                if(res.status === 200) {
@@ -132,9 +132,9 @@ const PatientModal = ({closeModal}) => {
                }
            })
        } catch(err) {
-           if (err) {
-               setError('Something went wrong, please try again');
-           }
+           console.log(err);
+           hideLoader();
+           setError('Something went wrong, please try again');
        }
     }
 
@@ -177,9 +177,9 @@ const PatientModal = ({closeModal}) => {
                 }
             })
         } catch (err) {
-           if (err) {
-               setError('Something went wrong');
-           }
+           hideLoader();
+           setError('Something went wrong');
+           console.log(err);
         }
     }
     // Run input validation for patient creation

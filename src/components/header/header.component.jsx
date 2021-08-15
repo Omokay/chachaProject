@@ -147,7 +147,7 @@ const  DashHeader = (props, children) => {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        ChaCha Clinic
+                        Garki General hospital
                     </Typography>
                 </Toolbar>
             </AppBar>
