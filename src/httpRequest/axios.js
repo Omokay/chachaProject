@@ -3,7 +3,8 @@ import {hideLoader} from "../components/Loader/loader.component";
 
 // export const baseUrl = 'http://localhost:1337/';
 
-export const baseUrl = 'https://vast-ridge-10824.herokuapp.com/';
+// export const baseUrl = 'https://vast-ridge-10824.herokuapp.com/'; // Heroku Link
+export const baseUrl = 'https://chamune-bhnjc8ios-omokay.vercel.app/';
 
 export const httpGet = async (url) => {
     try {
